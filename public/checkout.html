@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پرداخت | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .checkout-wrapper {
+      padding-top: 100px;
+      min-height: 80vh;
+      padding-bottom: 60px;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    @media (max-width: 800px) {
+      .checkout-grid { grid-template-columns: 1fr; }
+    }
+    .checkout-card {
+      padding: 28px;
+      border-radius: var(--radius);
+    }
+    .checkout-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--glass-border);
+      gap: 12px;
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-item-name { font-weight: 600; flex: 1; }
+    .order-item-qty { color: var(--text-secondary); font-size: 0.9rem; }
+    .order-item-price { font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .summary-row.total {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--glass-border);
+      color: var(--accent);
+    }
+    .success-box {
+      text-align: center;
+      padding: 60px 30px;
+      max-width: 500px;
+      margin: 0 auto;
+      border-radius: var(--radius);
+    }
+    .success-box .icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-box h2 { margin-bottom: 12px; }
+    .success-box p { color: var(--text-secondary); margin-bottom: 28px; line-height: 1.8; }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/" class="nav-link">خانه</a>
+        <a href="/#shop" class="nav-link">فروشگاه</a>
+        <a href="/cart.html" class="nav-link">سبد خرید</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="/cart.html" class="cart-btn glass-btn">
+          <span>🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-wrapper">
+    <div class="container">
+
+      <!-- حالت عادی پرداخت -->
+      <div id="checkoutFormSection">
+        <div class="section-header">
+          <h2 class="section-title">تکمیل خرید</h2>
+          <p class="section-subtitle">اطلاعات ارسال و پرداخت را وارد کنید</p>
+        </div>
+
+        <div class="checkout-grid">
+          <!-- فرم اطلاعات -->
+          <div class="checkout-card glass">
+            <h3>اطلاعات گیرنده</h3>
+            <form id="checkoutForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>نام و نام خانوادگی</label>
+                  <input type="text" id="fullName" required placeholder="مثال: علی رضایی">
+                </div>
+                <div class="form-group">
+                  <label>شماره موبایل</label>
+                  <input type="tel" id="phone" required placeholder="09121234567">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>آدرس کامل</label>
+                <input type="text" id="address" required placeholder="شهر، خیابان، پلاک، واحد">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>کد پستی</label>
+                  <input type="text" id="postal" placeholder="1234567890">
+                </div>
+                <div class="form-group">
+                  <label>روش پرداخت</label>
+                  <select id="payMethod" required style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);color:var(--text-primary);font-family:inherit;font-size:1rem;">
+                    <option value="online">پرداخت آنلاین (ساختگی)</option>
+                    <option value="cod">پرداخت در محل</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" id="cardSection">
+                <label>شماره کارت (ساختگی)</label>
+                <input type="text" id="cardNumber" placeholder="6037-XXXX-XXXX-XXXX" maxlength="19">
+              </div>
+
+              <button type="submit" class="btn primary full" style="margin-top:10px;">
+                تأیید و پرداخت
+              </button>
+            </form>
+          </div>
+
+          <!-- خلاصه سفارش -->
+          <div class="checkout-card glass">
+            <h3>خلاصه سفارش</h3>
+            <div id="orderItems">
+              <!-- آیتم‌ها -->
+            </div>
+            <div style="margin-top:20px;">
+              <div class="summary-row">
+                <span>جمع محصولات</span>
+                <span id="subTotal">۰ تومان</span>
+              </div>
+              <div class="summary-row">
+                <span>هزینه ارسال</span>
+                <span id="shippingCost">۳۰,۰۰۰ تومان</span>
+              </div>
+              <div class="summary-row total">
+                <span>مبلغ قابل پرداخت</span>
+                <span id="finalTotal">۰ تومان</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- حالت موفقیت -->
+      <div id="successSection" class="hidden">
+        <div class="success-box glass">
+          <div class="icon">✅</div>
+          <h2>پرداخت با موفقیت انجام شد!</h2>
+          <p>
+            سفارش شما ثبت شد و به زودی ارسال می‌شود.
+            <br>
+            کد پیگیری: <strong id="orderCode"></strong>
+          </p>
+          <a href="/" class="btn primary">بازگشت به فروشگاه</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer glass">
+    <div class="container">
+      <p>© ۱۴۰۵ FreshMart — تمام حقوق محفوظ است</p>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    const SHIPPING = 30000;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        if (!currentUser || !cart.length) {
+          document.getElementById('checkoutFormSection').innerHTML = `
+            <div class="success-box glass">
+              <div class="icon">🛒</div>
+              <h2>سبد خرید خالی است</h2>
+              <p>برای پرداخت ابتدا محصولی به سبد اضافه کنید.</p>
+              <a href="/#shop" class="btn primary">رفتن به فروشگاه</a>
+            </div>`;
+          return;
+        }
+        renderOrderSummary();
+      }, 150);
+    });
+
+    function renderOrderSummary() {
+      const container = document.getElementById('orderItems');
+      container.innerHTML = cart.map(item => `
+        <div class="order-item">
+          <div class="order-item-name">${item.name}</div>
+          <div class="order-item-qty">${item.qty} ×</div>
+          <div class="order-item-price">${formatPrice(item.price * item.qty)}</div>
+        </div>
+      `).join('');
+
+      const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      document.getElementById('subTotal').textContent = formatPrice(sub) + ' تومان';
+      document.getElementById('finalTotal').textContent = formatPrice(sub + SHIPPING) + ' تومان';
+    }
+
+    // نمایش/مخفی کردن فیلد کارت
+    document.getElementById('payMethod')?.addEventListener('change', (e) => {
+      document.getElementById('cardSection').style.display =
+        e.target.value === 'online' ? 'block' : 'none';
+    });
+
+    // ثبت سفارش ساختگی
+    document.getElementById('checkoutForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+
+  // پاک کردن خطاهای قبلی
+  form.querySelectorAll('.field-error').forEach(el => el.remove());
+  form.querySelectorAll('input, select').forEach(i => i.style.borderColor = '');
+
+  const fullNameEl = document.getElementById('fullName');
+  const phoneEl = document.getElementById('phone');
+  const addressEl = document.getElementById('address');
+  const postalEl = document.getElementById('postal');
+  const payMethodEl = document.getElementById('payMethod');
+  const cardEl = document.getElementById('cardNumber');
+
+  const fullName = fullNameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const address = addressEl.value.trim();
+  const postal = postalEl.value.trim();
+  const payMethod = payMethodEl.value;
+
+  let valid = true;
+
+  function showErr(input, msg) {
+    input.style.borderColor = 'var(--danger)';
+    const err = document.createElement('div');
+    err.className = 'field-error';
+    err.style.cssText = 'color:var(--danger);font-size:0.8rem;margin-top:4px;';
+    err.textContent = msg;
+    input.parentElement.appendChild(err);
+    valid = false;
+  }
+
+  // اعتبارسنجی‌ها
+  if (fullName.length < 3) {
+    showErr(fullNameEl, 'نام و نام خانوادگی حداقل ۳ حرف باشد');
+  }
+
+  const cleanedPhone = phone.replace(/[\s\-]/g, '');
+  if (!/^(09\d{9}|\+989\d{9}|9\d{9})$/.test(cleanedPhone)) {
+    showErr(phoneEl, 'شماره موبایل معتبر نیست (مثال: 09121234567)');
+  }
+
+  if (address.length < 10) {
+    showErr(addressEl, 'آدرس کامل‌تر وارد کنید (حداقل ۱۰ کاراکتر)');
+  }
+
+  if (postal && !/^\d{10}$/.test(postal.replace(/\s/g, ''))) {
+    showErr(postalEl, 'کد پستی باید ۱۰ رقم باشد');
+  }
+
+  if (payMethod === 'online' && cardEl) {
+    const card = cardEl.value.replace(/[\s\-]/g, '');
+    if (card && !/^\d{16}$/.test(card)) {
+      showErr(cardEl, 'شماره کارت باید ۱۶ رقم باشد');
+    }
+  }
+
+  if (!valid) {
+    showToast('لطفاً خطاهای فرم را برطرف کنید', 'error');
+    return;
+  }
+
+  // ===== از اینجا ثبت سفارش شروع می‌شه =====
+  const btn = form.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'در حال پردازش...';
+
+  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total = sub + 30000;
+
+  btn.disabled = true;
+btn.classList.add('loading');
+btn.textContent = 'در حال پردازش...';
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName,
+        phone: cleanedPhone,
+        address,
+        postal,
+        payMethod,
+        items: cart,
+        total,
+        userId: currentUser ? currentUser.id : null
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || 'خطا در ثبت سفارش', 'error');
+      btn.disabled = false;
+      btn.textContent = 'تأیید و پرداخت';
+      return;
+    }
+
+    await new Promise(r => setTimeout(r, 1200));
+
+    // پاک کردن سبد
+    cart = [];
+    if (currentUser) {
+      currentUser.cart = [];
+      saveUserToStorage();
+      syncCartToServer();
+    }
+    updateCartCount();
+
+    // نمایش موفقیت
+    document.getElementById('orderCode').textContent = data.order.code;
+    document.getElementById('checkoutFormSection').classList.add('hidden');
+    document.getElementById('successSection').classList.remove('hidden');
+    showToast('پرداخت و ثبت سفارش موفق بود!', 'success');
+
+  } catch (err) {
+    showToast('خطا در ارتباط با سرور', 'error');
+    btn.disabled = false;
+    btn.textContent = 'تأیید و پرداخت';
+  }
+});
+  </script>
+</body>
+</html>

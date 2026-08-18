@@ -1,0 +1,1532 @@
+/* =========================================================
+   Design System — Neumorphism / Soft UI
+   ========================================================= */
+:root {
+  /* --- سطح پایه (همه‌چیز از همین رنگ ساخته می‌شه) --- */
+  --bg-primary: #20222c;
+  --bg-secondary: #23252f;
+  --bg-tertiary: #262832;
+  --bg-card: #21232d;
+
+  --text-primary: #eceef5;
+  --text-secondary: #9497a8;
+  --text-tertiary: #686b7c;
+
+  --accent: #7c6aff;
+  --accent-hover: #6a58f0;
+  --accent-light: #a78bfa;
+  --accent-glow: rgba(124, 106, 255, 0.4);
+  --accent-glow-soft: rgba(124, 106, 255, 0.15);
+
+  --success: #2ecc71;
+  --success-glow: rgba(46, 204, 113, 0.3);
+  --danger: #ff4757;
+  --danger-glow: rgba(255, 71, 87, 0.3);
+  --warning: #ffa502;
+  --warning-glow: rgba(255, 165, 2, 0.3);
+
+  /* --- سایه‌های دوقلوی نئومورفیسم --- */
+  --sh-light: rgba(255, 255, 255, 0.045);
+  --sh-dark: rgba(0, 0, 0, 0.6);
+
+  --raised-sm: 4px 4px 10px var(--sh-dark), -4px -4px 10px var(--sh-light);
+  --raised: 8px 8px 18px var(--sh-dark), -6px -6px 16px var(--sh-light);
+  --raised-lg: 14px 14px 30px var(--sh-dark), -10px -10px 24px var(--sh-light);
+  --pressed-sm: inset 3px 3px 6px var(--sh-dark), inset -3px -3px 6px var(--sh-light);
+  --pressed: inset 5px 5px 10px var(--sh-dark), inset -5px -5px 10px var(--sh-light);
+  --flat: 2px 2px 5px var(--sh-dark), -2px -2px 5px var(--sh-light);
+
+  /* سایه رنگی برای عناصر accent (سازگار با پوسته نئومورفیک) */
+  --accent-raised: 6px 6px 16px rgba(0, 0, 0, 0.45), -4px -4px 12px rgba(124, 106, 255, 0.12);
+  --accent-pressed: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(124, 106, 255, 0.1);
+
+  /* سازگاری با کلاس‌های شیشه‌ای قبلی (اکنون به سبک نرم بازتعریف شدن) */
+  --glass-bg: var(--bg-card);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-shadow: var(--raised);
+  --glass-shadow-lg: var(--raised-lg);
+
+  /* --- شعاع گوشه‌ها --- */
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+  --radius-full: 999px;
+
+  /* --- انیمیشن --- */
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- تایپوگرافی --- */
+  --font: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  --header-height: 72px;
+
+  /* --- فاصله‌گذاری --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+}
+
+[data-theme="light"] {
+  --bg-primary: #e9edf5;
+  --bg-secondary: #eef1f8;
+  --bg-tertiary: #e3e7f0;
+  --bg-card: #e9edf5;
+
+  --text-primary: #212330;
+  --text-secondary: #62657a;
+  --text-tertiary: #8d90a1;
+
+  --accent: #6c5ce7;
+  --accent-hover: #5a4bd1;
+  --accent-light: #8b7cf0;
+  --accent-glow: rgba(108, 92, 231, 0.3);
+  --accent-glow-soft: rgba(108, 92, 231, 0.12);
+
+  --sh-light: rgba(255, 255, 255, 0.85);
+  --sh-dark: rgba(163, 177, 198, 0.55);
+
+  --accent-raised: 6px 6px 16px rgba(163, 177, 198, 0.5), -4px -4px 12px rgba(255, 255, 255, 0.85);
+  --accent-pressed: inset 4px 4px 8px rgba(163, 177, 198, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+
+  --glass-border: rgba(163, 177, 198, 0.25);
+}
+
+/* =========================================================
+   Reset & Base
+   ========================================================= */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 12px);
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--transition-fast);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* اسکرول‌بار سازگار با سطح نرم */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-secondary);
+  box-shadow: var(--pressed-sm);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   سطح نرم پایه (جایگزین افکت شیشه‌ای قبلی)
+   ========================================================= */
+.glass {
+  background: var(--bg-card);
+  box-shadow: var(--raised);
+  border: 1px solid var(--glass-border);
+}
+
+/* =========================================================
+   Buttons — دکمه‌های برجسته با فیدبک فرورفتگی هنگام کلیک
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  will-change: transform;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--accent-raised);
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.5), -5px -5px 14px rgba(124, 106, 255, 0.18);
+}
+
+.btn.primary:active {
+  box-shadow: var(--accent-pressed);
+  background: var(--accent-hover);
+}
+
+.btn.large {
+  padding: 16px 40px;
+  font-size: 1.05rem;
+  border-radius: var(--radius);
+}
+
+.btn.full {
+  width: 100%;
+}
+
+.btn.danger {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.45), -4px -4px 12px rgba(255, 71, 87, 0.12);
+}
+
+.btn.danger:hover {
+  background: #e03e4e;
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.5), -5px -5px 14px rgba(255, 71, 87, 0.18);
+}
+
+.btn.danger:active {
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 71, 87, 0.15);
+}
+
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--raised-sm);
+}
+
+.glass-btn:hover {
+  color: var(--accent-light);
+  box-shadow: 6px 6px 14px var(--sh-dark), -5px -5px 12px var(--sh-light);
+}
+
+.glass-btn:active {
+  box-shadow: var(--pressed-sm);
+  color: var(--accent);
+}
+
+.glass-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--accent-raised);
+}
+
+.glass-btn.primary:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.glass-btn.primary:active {
+  box-shadow: var(--accent-pressed);
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--header-height);
+  background: var(--bg-primary);
+  transition: box-shadow 0.3s ease, height 0.3s ease;
+}
+
+.header.scrolled {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.5px;
+  transition: transform var(--transition-fast);
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.logo-icon {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 2px 6px var(--accent-glow-soft));
+}
+
+.logo-text {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-primary);
+  padding: 6px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--pressed-sm);
+}
+
+.nav-link {
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+.nav-link.active {
+  color: #fff;
+  background: var(--accent);
+  font-weight: 600;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4), -2px -2px 6px rgba(124, 106, 255, 0.15);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  box-shadow: var(--raised-sm);
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: rotate(20deg);
+}
+
+.theme-toggle:active {
+  box-shadow: var(--pressed-sm);
+}
+
+.cart-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  box-shadow: var(--raised-sm);
+  transition: all var(--transition-fast);
+}
+
+.cart-btn:hover {
+  transform: scale(1.05);
+}
+
+.cart-btn:active {
+  box-shadow: var(--pressed-sm);
+}
+
+.cart-count {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.auth-area, .user-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 28px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 2.5px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* =========================================================
+   Hero
+   ========================================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: var(--header-height);
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, var(--accent-glow-soft) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 25%, rgba(167, 139, 250, 0.08) 0%, transparent 45%);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+}
+
+.hero-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.hero-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  line-height: 1.9;
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s var(--ease-spring) forwards;
+  opacity: 0;
+}
+
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+
+/* =========================================================
+   Sections
+   ========================================================= */
+.section {
+  padding: clamp(56px, 8vw, 80px) 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+}
+
+/* =========================================================
+   Search Box — به‌صورت شیار فرورفته (Inset) طراحی شده
+   ========================================================= */
+.search-box {
+  display: flex;
+  align-items: center;
+  max-width: 480px;
+  margin: 0 auto 48px;
+  padding: 4px 6px 4px 20px;
+  border-radius: var(--radius-full);
+  gap: 8px;
+  background: var(--bg-primary);
+  box-shadow: var(--pressed);
+  transition: all var(--transition);
+}
+
+.search-box:hover {
+  box-shadow: var(--pressed), 0 0 0 1px var(--glass-border);
+}
+
+.search-box:focus-within {
+  box-shadow: var(--pressed), 0 0 0 3px var(--accent-glow-soft);
+}
+
+.search-box input {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 12px 4px;
+  min-height: 44px;
+  border-radius: 0 !important;
+}
+
+.search-box input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.75;
+}
+
+.search-box input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.search-icon {
+  font-size: 1.1rem;
+  opacity: 0.6;
+  padding: 0 10px 0 4px;
+  flex-shrink: 0;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   Category Filters — دکمه‌های برجسته / فعال به رنگ accent
+   ========================================================= */
+.category-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 6px 4px 14px;
+  margin-bottom: 36px;
+  justify-content: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.category-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 9px 22px;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  box-shadow: var(--raised-sm);
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+}
+
+.filter-btn:active {
+  box-shadow: var(--pressed-sm);
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--accent-pressed);
+}
+
+/* =========================================================
+   Products Grid
+   ========================================================= */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.product-card {
+  position: relative;
+  background: var(--bg-card);
+  border: none;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--raised);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--raised-lg);
+}
+
+.product-card:active {
+  transform: translateY(-2px) scale(0.99);
+  box-shadow: var(--raised-sm);
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  aspect-ratio: 1 / 0.75;
+  min-height: 180px;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.product-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.product-category {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.product-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.product-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.product-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.product-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.product-price span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.add-to-cart-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-xs);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4), -2px -2px 8px rgba(124, 106, 255, 0.1);
+  transition: all var(--transition);
+}
+
+.add-to-cart-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.add-to-cart-btn:active {
+  transform: scale(0.95);
+  box-shadow: var(--accent-pressed);
+}
+
+.add-to-cart-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Lazy load images */
+.product-image img.lazy-img {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-image img.lazy-img.loaded {
+  opacity: 1;
+}
+
+.product-image img.lazy-img:not(.loaded) {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* =========================================================
+   Price / Discount
+   ========================================================= */
+.price-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.price-original {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.price-final {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.discount-badge {
+  display: inline-block;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-left: 6px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+input:focus, select:focus {
+  box-shadow: var(--pressed), 0 0 0 3px var(--accent-glow-soft) !important;
+}
+
+/* =========================================================
+   Loading Spinner
+   ========================================================= */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  box-shadow: var(--raised-sm);
+  position: relative;
+}
+
+.spinner::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 3px solid transparent;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* دکمه در حالت لود */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+  position: relative;
+}
+
+.btn.loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* =========================================================
+   About
+   ========================================================= */
+.about-card {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  border-radius: var(--radius);
+  text-align: center;
+  background: var(--bg-card);
+  box-shadow: var(--raised);
+}
+
+.about-card h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.about-card p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 2;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.footer {
+  padding: 32px 0;
+  text-align: center;
+  margin-top: 40px;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  background: var(--bg-primary);
+  box-shadow: 0 -6px 18px var(--sh-dark);
+}
+
+.footer p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* =========================================================
+   Modals
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 14, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 36px 32px;
+  border-radius: var(--radius);
+  position: relative;
+  background: var(--bg-card);
+  box-shadow: var(--raised-lg);
+  transform: scale(0.92) translateY(20px);
+  transition: all 0.35s var(--ease-spring);
+}
+
+.modal-overlay.active .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  background: var(--bg-card);
+  box-shadow: var(--raised-sm);
+}
+
+.modal-close:hover {
+  color: var(--danger);
+  transform: rotate(90deg);
+}
+
+.modal-close:active {
+  box-shadow: var(--pressed-sm);
+}
+
+/* اطمینان از عدم اسکرول بدنه هنگام باز بودن مودال */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* =========================================================
+   Forms — ورودی‌های فرورفته (Inset)
+   ========================================================= */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  border: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  min-height: 46px;
+  box-shadow: var(--pressed-sm);
+  transition: all var(--transition);
+}
+
+.form-group input:focus {
+  box-shadow: var(--pressed-sm), 0 0 0 3px var(--accent-glow-soft);
+}
+
+.form-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.form-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.form-switch a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.form-switch a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   Product Modal
+   ========================================================= */
+.product-modal {
+  max-width: 560px;
+}
+
+.product-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-modal-image {
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  overflow: hidden;
+  box-shadow: var(--pressed-sm);
+}
+
+.product-modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-modal-info h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.product-modal-info .category {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.product-modal-info .full-desc {
+  color: var(--text-secondary);
+  line-height: 1.9;
+  margin-bottom: 20px;
+}
+
+.product-modal-info .price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+   Cart Modal
+   ========================================================= */
+.cart-modal {
+  max-width: 480px;
+}
+
+#cartItems {
+  max-height: 320px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  box-shadow: var(--raised-sm);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.cart-item:hover {
+  box-shadow: 6px 6px 14px var(--sh-dark), -4px -4px 12px var(--sh-light);
+}
+
+.cart-item-image {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: var(--pressed-sm);
+}
+
+.cart-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-item-qty button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--raised-sm);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item-qty button:hover {
+  color: var(--accent);
+}
+
+.cart-item-qty button:active {
+  box-shadow: var(--pressed-sm);
+}
+
+.cart-item-remove {
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  transition: transform var(--transition-fast);
+}
+
+.cart-item-remove:hover {
+  transform: scale(1.2);
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+}
+
+.cart-footer {
+  padding-top: 16px;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.cart-total strong {
+  color: var(--accent);
+  font-size: 1.25rem;
+}
+
+/* =========================================================
+   Profile
+   ========================================================= */
+.profile-info {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  box-shadow: var(--raised-sm);
+  transition: box-shadow var(--transition-fast);
+}
+
+.profile-row:hover {
+  box-shadow: 6px 6px 14px var(--sh-dark), -4px -4px 12px var(--sh-light);
+}
+
+.profile-row span:first-child {
+  color: var(--text-secondary);
+}
+
+.profile-row span:last-child {
+  font-weight: 600;
+}
+
+/* =========================================================
+   Toast Notifications
+   ========================================================= */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toast {
+  max-width: 320px;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: var(--raised);
+  animation: toastIn 0.4s var(--ease-spring) forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.success {
+  box-shadow: var(--raised), inset 3px 0 0 var(--success);
+}
+
+.toast.error {
+  box-shadow: var(--raised), inset 3px 0 0 var(--danger);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* =========================================================
+   Empty States
+   ========================================================= */
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 48px 20px;
+}
+
+/* =========================================================
+   Accessibility
+   ========================================================= */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (min-width: 801px) {
+  .checkout-grid > .checkout-card:last-child {
+    position: sticky;
+    top: 90px;
+    align-self: start;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: calc(var(--header-height) + 8px);
+    left: 16px;
+    right: 16px;
+    flex-direction: column;
+    background: var(--bg-card);
+    box-shadow: var(--raised-lg);
+    padding: 10px;
+    border-radius: var(--radius);
+    gap: 4px;
+  }
+
+  .nav.open {
+    display: flex;
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-actions .auth-area .glass-btn:not(.primary) {
+    display: none;
+  }
+
+  .hero {
+    min-height: 70vh;
+    padding-top: calc(var(--header-height) + 20px);
+  }
+
+  .hero-title {
+    font-size: 1.9rem;
+  }
+
+  .section {
+    padding: 48px 0;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .modal {
+    padding: 28px 20px;
+  }
+
+  .about-card {
+    padding: 32px 24px;
+  }
+
+  .product-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-to-cart-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .glass-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* کاهش حرکت برای کاربرانی که prefers-reduced-motion دارند */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}

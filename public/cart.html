@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سبد خرید | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- هدر -->
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="/" class="nav-link">خانه</a>
+        <a href="/#shop" class="nav-link">فروشگاه</a>
+        <a href="/#about" class="nav-link">درباره ما</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle" title="تغییر تم">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="/cart.html" class="cart-btn glass-btn" title="سبد خرید">
+          <span>🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <div class="auth-area" id="authArea">
+          <button class="glass-btn" id="loginBtn">ورود</button>
+          <button class="glass-btn primary" id="signupBtn">ثبت‌نام</button>
+        </div>
+        <div class="user-area hidden" id="userArea">
+          <a href="/profile.html" class="glass-btn profile-btn" id="profileBtn">
+            <span id="userNameDisplay">کاربر</span>
+          </a>
+        </div>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main style="padding-top: 100px; min-height: 80vh;">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">سبد خرید شما</h2>
+        <p class="section-subtitle">محصولات انتخاب‌شده را مدیریت کنید</p>
+      </div>
+
+      <div class="cart-page glass" style="padding: 32px; border-radius: var(--radius); max-width: 800px; margin: 0 auto;">
+        <div id="cartItems">
+          <!-- آیتم‌ها اینجا لود می‌شوند -->
+        </div>
+
+        <div class="cart-footer" style="margin-top: 24px;">
+          <div class="cart-total">
+            <span>جمع کل:</span>
+            <strong id="cartTotal">۰ تومان</strong>
+          </div>
+          <button class="btn primary full" id="checkoutBtn" style="margin-top: 16px;">ادامه خرید / پرداخت</button>
+          <a href="/#shop" class="btn full" style="margin-top: 12px; background: transparent; border: 1px solid var(--glass-border); color: var(--text-primary);">ادامه خرید از فروشگاه</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer glass">
+    <div class="container">
+      <p>© ۱۴۰۵ FreshMart — تمام حقوق محفوظ است</p>
+    </div>
+  </footer>
+
+  <!-- مودال ورود -->
+  <div class="modal-overlay hidden" id="loginModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="loginModal">×</button>
+      <h2>ورود به حساب</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="loginEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn primary full">ورود</button>
+      </form>
+      <p class="form-switch">حساب ندارید؟ <a href="#" id="switchToSignup">ثبت‌نام کنید</a></p>
+    </div>
+  </div>
+
+  <!-- مودال ثبت‌نام -->
+  <div class="modal-overlay hidden" id="signupModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="signupModal">×</button>
+      <h2>ثبت‌نام</h2>
+      <form id="signupForm">
+        <div class="form-group">
+          <label>نام کاربری</label>
+          <input type="text" id="signupUsername" required placeholder="نام کاربری">
+        </div>
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="signupEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="signupPassword" required placeholder="••••••••" minlength="4">
+        </div>
+        <button type="submit" class="btn primary full">ثبت‌نام</button>
+      </form>
+      <p class="form-switch">قبلاً ثبت‌نام کرده‌اید؟ <a href="#" id="switchToLogin">وارد شوید</a></p>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // وقتی صفحه سبد لود شد، سبد رو رندر کن
+   document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/api/products');
+    products = await res.json();
+  } catch (e) {}
+
+  setTimeout(() => {
+    if (!currentUser) {
+      document.getElementById('cartItems').innerHTML = `
+        <div class="cart-empty">
+          برای مشاهده سبد خرید ابتدا وارد حساب شوید.
+          <br><br>
+          <button class="btn primary" onclick="openModal('loginModal')">ورود</button>
+        </div>`;
+      document.getElementById('cartTotal').textContent = '۰ تومان';
+    } else {
+      // اصلاح تعدادهایی که از موجودی بیشترن
+      let fixed = false;
+      cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        const stock = product ? (product.stock ?? 0) : 0;
+        if (item.qty > stock) {
+          item.qty = stock;
+          fixed = true;
+        }
+      });
+      cart = cart.filter(i => i.qty > 0);
+      if (fixed) {
+        saveUserToStorage();
+        syncCartToServer();
+        showToast('تعداد برخی محصولات به‌خاطر موجودی اصلاح شد', 'error');
+      }
+      updateCartCount();
+      renderCart();
+    }
+  }, 100);
+});
+  </script>
+</body>
+</html>

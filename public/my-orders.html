@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سفارش‌های من | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .orders-wrapper { padding-top: 100px; min-height: 80vh; padding-bottom: 60px; }
+    .orders-list { display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; }
+    .order-card { padding: 22px; border-radius: var(--radius); }
+    .order-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+    }
+    .order-code { font-weight: 800; font-size: 1.1rem; color: var(--accent); }
+    .status-badge {
+      padding: 4px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+    }
+    .status-paid { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .status-shipped { background: rgba(108,92,231,0.15); color: var(--accent); }
+    .status-cancelled { background: rgba(231,76,60,0.15); color: #e74c3c; }
+    .order-info {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
+      margin-bottom: 12px; font-size: 0.95rem;
+    }
+    @media (max-width: 600px) { .order-info { grid-template-columns: 1fr; } }
+    .order-info span { color: var(--text-secondary); }
+    .order-items { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/" class="nav-link">خانه</a>
+        <a href="/#shop" class="nav-link">فروشگاه</a>
+        <a href="/my-orders.html" class="nav-link active">سفارش‌های من</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="/cart.html" class="cart-btn glass-btn">
+          <span>🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <div class="auth-area" id="authArea">
+          <button class="glass-btn" id="loginBtn">ورود</button>
+          <button class="glass-btn primary" id="signupBtn">ثبت‌نام</button>
+        </div>
+        <div class="user-area hidden" id="userArea">
+          <a href="/profile.html" class="glass-btn profile-btn">
+            <span id="userNameDisplay">کاربر</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="orders-wrapper">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">سفارش‌های من</h2>
+        <p class="section-subtitle">تاریخچه خریدهای شما</p>
+      </div>
+
+      <div class="orders-list" id="ordersList">
+        <p style="text-align:center;color:var(--text-secondary);">در حال بارگذاری...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer glass">
+    <div class="container">
+      <p>© ۱۴۰۵ FreshMart — تمام حقوق محفوظ است</p>
+    </div>
+  </footer>
+
+  <!-- مودال ورود -->
+  <div class="modal-overlay hidden" id="loginModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="loginModal">×</button>
+      <h2>ورود به حساب</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="loginEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn primary full">ورود</button>
+      </form>
+      <p class="form-switch">حساب ندارید؟ <a href="#" id="switchToSignup">ثبت‌نام کنید</a></p>
+    </div>
+  </div>
+
+  <!-- مودال ثبت‌نام -->
+  <div class="modal-overlay hidden" id="signupModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="signupModal">×</button>
+      <h2>ثبت‌نام</h2>
+      <form id="signupForm">
+        <div class="form-group">
+          <label>نام کاربری</label>
+          <input type="text" id="signupUsername" required placeholder="نام کاربری">
+        </div>
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="signupEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="signupPassword" required placeholder="••••••••" minlength="4">
+        </div>
+        <button type="submit" class="btn primary full">ثبت‌نام</button>
+      </form>
+      <p class="form-switch">قبلاً ثبت‌نام کرده‌اید؟ <a href="#" id="switchToLogin">وارد شوید</a></p>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadMyOrders, 150);
+    });
+
+    async function loadMyOrders() {
+      const list = document.getElementById('ordersList');
+
+      if (!currentUser) {
+        list.innerHTML = `
+          <div class="empty-state glass" style="border-radius:var(--radius);padding:48px;">
+            <p style="margin-bottom:20px;">برای مشاهده سفارش‌ها ابتدا وارد حساب شوید.</p>
+            <button class="btn primary" onclick="openModal('loginModal')">ورود به حساب</button>
+          </div>`;
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/orders/user/${currentUser.id}`);
+        const orders = await res.json();
+
+        if (!orders.length) {
+          list.innerHTML = `
+            <div class="empty-state glass" style="border-radius:var(--radius);padding:48px;">
+              <p style="margin-bottom:20px;">هنوز سفارشی ثبت نکرده‌اید.</p>
+              <a href="/#shop" class="btn primary">رفتن به فروشگاه</a>
+            </div>`;
+          return;
+        }
+
+        const statusMap = {
+          paid: { text: 'در انتظار ارسال', class: 'status-paid' },
+          shipped: { text: 'ارسال شده ✅', class: 'status-shipped' },
+          cancelled: { text: 'لغو شده', class: 'status-cancelled' }
+        };
+
+        list.innerHTML = orders.map(o => {
+          const st = statusMap[o.status] || statusMap.paid;
+          const itemsText = o.items.map(i => `${i.name} (${i.qty})`).join('، ');
+          const date = new Date(o.createdAt).toLocaleString('fa-IR');
+
+          return `
+            <div class="order-card glass">
+              <div class="order-header">
+                <div class="order-code">${o.code}</div>
+                <span class="status-badge ${st.class}">${st.text}</span>
+              </div>
+              <div class="order-info">
+                <div><span>تاریخ:</span> ${date}</div>
+                <div><span>مبلغ:</span> <strong>${Number(o.total).toLocaleString('fa-IR')} تومان</strong></div>
+                <div><span>آدرس:</span> ${o.address}</div>
+                <div><span>روش پرداخت:</span> ${o.payMethod === 'cod' ? 'در محل' : 'آنلاین'}</div>
+                ${o.shippedAt ? `<div><span>تاریخ ارسال:</span> ${new Date(o.shippedAt).toLocaleString('fa-IR')}</div>` : ''}
+              </div>
+              <div class="order-items">محصولات: ${itemsText}</div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        list.innerHTML = `<p style="text-align:center;color:var(--danger);">خطا در بارگذاری سفارش‌ها</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

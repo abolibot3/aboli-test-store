@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فروشگاه مواد غذایی | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- هدر -->
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#home" class="nav-link active">خانه</a>
+        <a href="#shop" class="nav-link">فروشگاه</a>
+        <a href="#about" class="nav-link">درباره ما</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle" title="تغییر تم">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="/cart.html" class="cart-btn glass-btn" id="cartBtn" title="سبد خرید">
+        <span>🛒</span>
+        <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <div class="auth-area" id="authArea">
+          <button class="glass-btn" id="loginBtn">ورود</button>
+          <button class="glass-btn primary" id="signupBtn">ثبت‌نام</button>
+        </div>
+        <div class="user-area hidden" id="userArea">
+  <a href="/profile.html" class="glass-btn profile-btn" id="profileBtn">
+    <span id="userNameDisplay">کاربر</span>
+  </a>
+</div>
+        </div>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- محتوای اصلی -->
+  <main>
+    <!-- بخش هیرو -->
+    <section class="hero" id="home">
+      <div class="hero-bg"></div>
+      <div class="container hero-content">
+        <h1 class="hero-title animate-fade-up">مواد غذایی تازه و باکیفیت</h1>
+        <p class="hero-desc animate-fade-up delay-1">
+          بهترین محصولات غذایی را با کیفیت عالی و قیمت مناسب از ما بخواهید.
+          ارسال سریع به سراسر کشور.
+        </p>
+        <a href="#shop" class="btn primary large animate-fade-up delay-2">ورود به فروشگاه</a>
+      </div>
+    </section>
+
+    <!-- بخش فروشگاه -->
+    <section class="shop section" id="shop">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">محصولات ما</h2>
+          <p class="section-subtitle">از بین بهترین مواد غذایی انتخاب کنید</p>
+        </div>
+
+        <div class="search-box glass">
+          <input type="text" id="searchInput" placeholder="جستجوی محصول..." autocomplete="off">
+          <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="category-filters" id="categoryFilters">
+  <button class="filter-btn active" data-category="all">همه</button>
+  <button class="filter-btn" data-category="غلات">غلات</button>
+  <button class="filter-btn" data-category="روغن‌ها">روغن‌ها</button>
+  <button class="filter-btn" data-category="شیرینی‌جات">شیرینی‌جات</button>
+  <button class="filter-btn" data-category="نوشیدنی‌ها">نوشیدنی‌ها</button>
+  <button class="filter-btn" data-category="ادویه‌جات">ادویه‌جات</button>
+  <button class="filter-btn" data-category="لبنیات">لبنیات</button>
+  <button class="filter-btn" data-category="سایر">سایر</button>
+</div>
+
+        <div class="products-grid" id="productsGrid">
+          <!-- کارت‌های محصول اینجا با JS لود می‌شوند -->
+        </div>
+      </div>
+    </section>
+
+    <!-- درباره ما -->
+    <section class="about section" id="about">
+      <div class="container">
+        <div class="about-card glass">
+          <h2>درباره FreshMart</h2>
+          <p>
+            ما در FreshMart متعهد به ارائه بهترین و تازه‌ترین مواد غذایی هستیم.
+            تمام محصولات ما با دقت انتخاب شده و از تأمین‌کنندگان معتبر تهیه می‌شوند.
+            هدف ما رضایت شما و سلامت خانواده‌تان است.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- فوتر -->
+  <footer class="footer glass">
+    <div class="container">
+      <p>© ۱۴۰۵ FreshMart — تمام حقوق محفوظ است</p>
+    </div>
+  </footer>
+
+  <!-- مودال ورود -->
+  <div class="modal-overlay hidden" id="loginModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="loginModal">×</button>
+      <h2>ورود به حساب</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="loginEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn primary full">ورود</button>
+      </form>
+      <p class="form-switch">حساب ندارید؟ <a href="#" id="switchToSignup">ثبت‌نام کنید</a></p>
+    </div>
+  </div>
+
+  <!-- مودال ثبت‌نام -->
+  <div class="modal-overlay hidden" id="signupModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="signupModal">×</button>
+      <h2>ثبت‌نام</h2>
+      <form id="signupForm">
+        <div class="form-group">
+          <label>نام کاربری</label>
+          <input type="text" id="signupUsername" required placeholder="نام کاربری">
+        </div>
+        <div class="form-group">
+          <label>ایمیل</label>
+          <input type="email" id="signupEmail" required placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <input type="password" id="signupPassword" required placeholder="••••••••" minlength="4">
+        </div>
+        <button type="submit" class="btn primary full">ثبت‌نام</button>
+      </form>
+      <p class="form-switch">قبلاً ثبت‌نام کرده‌اید؟ <a href="#" id="switchToLogin">وارد شوید</a></p>
+    </div>
+  </div>
+
+  <!-- مودال جزئیات محصول -->
+  <div class="modal-overlay hidden" id="productModal">
+    <div class="modal glass product-modal">
+      <button class="modal-close" data-close="productModal">×</button>
+      <div class="product-modal-content" id="productModalContent">
+        <!-- محتوای جزئیات محصول -->
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال سبد خرید -->
+  <div class="modal-overlay hidden" id="cartModal">
+    <div class="modal glass cart-modal">
+      <button class="modal-close" data-close="cartModal">×</button>
+      <h2>سبد خرید</h2>
+      <div id="cartItems">
+        <!-- آیتم‌های سبد -->
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>جمع کل:</span>
+          <strong id="cartTotal">۰ تومان</strong>
+        </div>
+        <button class="btn primary full" id="checkoutBtn">ادامه خرید / پرداخت</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال پروفایل -->
+  <div class="modal-overlay hidden" id="profileModal">
+    <div class="modal glass">
+      <button class="modal-close" data-close="profileModal">×</button>
+      <h2>پروفایل من</h2>
+      <div class="profile-info" id="profileInfo">
+        <!-- اطلاعات کاربر -->
+      </div>
+      <button class="btn danger full" id="logoutBtn">خروج از حساب</button>
+    </div>
+  </div>
+
+  <!-- نوتیفیکیشن -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

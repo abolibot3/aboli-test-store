@@ -1,0 +1,25 @@
+{
+  "name": "food-store",
+  "version": "1.0.0",
+  "description": "فروشگاه مواد غذایی حرفه‌ای با استایل شیشه‌ای",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.0",
+    "express-rate-limit": "^8.6.2"
+  },
+  "keywords": [
+    "food",
+    "store",
+    "glassmorphism"
+  ],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مدیریت سفارش‌ها | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .orders-wrapper { padding-top: 100px; min-height: 80vh; padding-bottom: 60px; }
+    .search-bar {
+      display: flex; gap: 12px; max-width: 480px; margin: 0 auto 32px;
+    }
+    .search-bar input {
+      flex: 1; padding: 12px 18px; border-radius: 50px;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      color: var(--text-primary); font-size: 1rem;
+    }
+    .orders-list { display: flex; flex-direction: column; gap: 16px; max-width: 900px; margin: 0 auto; }
+    .order-card {
+      padding: 22px; border-radius: var(--radius);
+    }
+    .order-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 14px;
+    }
+    .order-code { font-weight: 800; font-size: 1.1rem; color: var(--accent); }
+    .status-badge {
+      padding: 4px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+    }
+    .status-paid { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .status-shipped { background: rgba(108,92,231,0.15); color: var(--accent); }
+    .status-cancelled { background: rgba(231,76,60,0.15); color: #e74c3c; }
+    .order-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin-bottom: 14px; font-size: 0.95rem; }
+    @media (max-width: 600px) { .order-info { grid-template-columns: 1fr; } }
+    .order-info span { color: var(--text-secondary); }
+    .order-items { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px; }
+    .order-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .lock-screen {
+      max-width: 400px; margin: 120px auto 0; padding: 40px 32px;
+      border-radius: var(--radius); text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/" class="nav-link">خانه</a>
+        <a href="/admin.html" class="nav-link">محصولات</a>
+        <a href="/admin-orders.html" class="nav-link active">سفارش‌ها</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="orders-wrapper">
+    <div class="container">
+
+      <!-- قفل ادمین -->
+      <div id="lockScreen" class="lock-screen glass">
+        <h2>🔐 مدیریت سفارش‌ها</h2>
+        <p style="color:var(--text-secondary);margin-bottom:20px;">رمز عبور ادمین را وارد کنید</p>
+        <div class="form-group">
+          <input type="password" id="adminPassword" placeholder="رمز عبور" style="text-align:center;">
+        </div>
+        <button class="btn primary full" id="adminLoginBtn">ورود</button>
+        <p style="margin-top:14px;font-size:0.85rem;color:var(--text-secondary);">رمز: <code>admin123</code></p>
+      </div>
+
+      <!-- پنل سفارش‌ها -->
+      <div id="ordersPanel" class="hidden">
+        <div class="section-header">
+          <h2 class="section-title">مدیریت سفارش‌ها</h2>
+          <p class="section-subtitle">پیگیری ارسال و جستجو با شماره موبایل</p>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" id="phoneSearch" placeholder="جستجو با موبایل یا کد سفارش (مثل FM-12345678)...">
+          <button class="btn primary" id="searchBtn">جستجو</button>
+          <button class="glass-btn" id="showAllBtn">همه</button>
+        </div>
+
+        <div class="orders-list" id="ordersList">
+          <p style="text-align:center;color:var(--text-secondary);">در حال بارگذاری...</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer glass">
+    <div class="container"><p>© ۱۴۰۵ FreshMart — مدیریت سفارش‌ها</p></div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    const ADMIN_PASS = 'admin123';
+
+    if (sessionStorage.getItem('isAdmin') === 'true') {
+      showPanel();
+    }
+
+    document.getElementById('adminLoginBtn').addEventListener('click', () => {
+      if (document.getElementById('adminPassword').value === ADMIN_PASS) {
+        sessionStorage.setItem('isAdmin', 'true');
+        showPanel();
+        showToast('وارد شدید', 'success');
+      } else {
+        showToast('رمز اشتباه است', 'error');
+      }
+    });
+
+    function showPanel() {
+      document.getElementById('lockScreen').classList.add('hidden');
+      document.getElementById('ordersPanel').classList.remove('hidden');
+      loadOrders();
+    }
+
+   async function loadOrders(query = null) {
+  try {
+    let url = '/api/orders';
+    if (query) {
+      url = `/api/orders/search?q=${encodeURIComponent(query)}`;
+    }
+
+    const res = await fetch(url);
+    const orders = await res.json();
+    renderOrders(orders);
+  } catch (e) {
+    showToast('خطا در بارگذاری', 'error');
+  }
+}
+
+    function renderOrders(orders) {
+      const list = document.getElementById('ordersList');
+
+      if (!orders.length) {
+        list.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:40px;">سفارشی یافت نشد</p>';
+        return;
+      }
+
+      const statusMap = {
+        paid: { text: 'پرداخت شده — در انتظار ارسال', class: 'status-paid' },
+        shipped: { text: 'ارسال شده ✅', class: 'status-shipped' },
+        cancelled: { text: 'لغو شده', class: 'status-cancelled' }
+      };
+
+      list.innerHTML = orders.map(o => {
+        const st = statusMap[o.status] || statusMap.paid;
+        const itemsText = o.items.map(i => `${i.name} (${i.qty})`).join('، ');
+        const date = new Date(o.createdAt).toLocaleString('fa-IR');
+
+        return `
+          <div class="order-card glass">
+            <div class="order-header">
+              <div class="order-code">${o.code}</div>
+              <span class="status-badge ${st.class}">${st.text}</span>
+            </div>
+            <div class="order-info">
+              <div><span>نام:</span> <strong>${o.fullName}</strong></div>
+              <div><span>موبایل:</span> <strong>${o.phone}</strong></div>
+              <div><span>آدرس:</span> ${o.address}</div>
+              <div><span>کد پستی:</span> ${o.postal || '—'}</div>
+              <div><span>روش پرداخت:</span> ${o.payMethod === 'cod' ? 'در محل' : 'آنلاین'}</div>
+              <div><span>مبلغ:</span> <strong>${Number(o.total).toLocaleString('fa-IR')} تومان</strong></div>
+              <div><span>تاریخ:</span> ${date}</div>
+              ${o.shippedAt ? `<div><span>تاریخ ارسال:</span> ${new Date(o.shippedAt).toLocaleString('fa-IR')}</div>` : ''}
+            </div>
+            <div class="order-items">محصولات: ${itemsText}</div>
+            <div class="order-actions">
+              ${o.status === 'paid' ? `
+                <button class="btn primary" onclick="setStatus(${o.id}, 'shipped')">علامت به‌عنوان ارسال‌شده</button>
+                <button class="btn danger" onclick="setStatus(${o.id}, 'cancelled')">لغو سفارش</button>
+              ` : ''}
+              ${o.status === 'shipped' ? `<span style="color:var(--accent);font-weight:600;">✓ این سفارش ارسال شده</span>` : ''}
+              ${o.status === 'cancelled' ? `<span style="color:var(--danger);font-weight:600;">این سفارش لغو شده</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function setStatus(id, status) {
+      const msg = status === 'shipped' ? 'آیا سفارش ارسال شده؟' : 'آیا سفارش لغو شود؟';
+      if (!confirm(msg)) return;
+
+      try {
+        const res = await fetch(`/api/orders/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' , 'x-admin-key': 'Admin123' },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.error || 'خطا', 'error');
+          return;
+        }
+        showToast('وضعیت به‌روز شد', 'success');
+        loadOrders();
+      } catch (e) {
+        showToast('خطا در ارتباط', 'error');
+      }
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+  const q = document.getElementById('phoneSearch').value.trim();
+  if (!q) {
+    showToast('شماره موبایل یا کد سفارش را وارد کنید', 'error');
+    return;
+  }
+  loadOrders(q);
+});
+
+    document.getElementById('showAllBtn').addEventListener('click', () => {
+      document.getElementById('phoneSearch').value = '';
+      loadOrders();
+    });
+
+    document.getElementById('phoneSearch').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('searchBtn').click();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل ادمین | FreshMart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .admin-wrapper {
+      padding-top: 100px;
+      min-height: 80vh;
+      padding-bottom: 60px;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (max-width: 800px) {
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+    .admin-card {
+      padding: 28px;
+      border-radius: var(--radius);
+    }
+    .admin-card h3 {
+      margin-bottom: 20px;
+      font-size: 1.25rem;
+    }
+    .admin-products-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .admin-product-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+    }
+    .admin-product-item .info {
+      flex: 1;
+      min-width: 0;
+    }
+    .admin-product-item .name {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-product-item .meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .delete-btn {
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .delete-btn:hover {
+      background: #e03e4e;
+      transform: scale(1.05);
+    }
+    .lock-screen {
+      max-width: 400px;
+      margin: 120px auto 0;
+      padding: 40px 32px;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .lock-screen h2 {
+      margin-bottom: 8px;
+    }
+    .lock-screen p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .edit-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-left: 6px;
+}
+.edit-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+.admin-product-item .actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+  </style>
+</head>
+<body>
+  <header class="header glass" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">FreshMart</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/" class="nav-link">خانه</a>
+        <a href="/#shop" class="nav-link">فروشگاه</a>
+        <a href="/admin.html" class="nav-link active">ادمین</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle glass-btn" id="themeToggle">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a href="/cart.html" class="cart-btn glass-btn">
+          <span>🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-wrapper">
+    <div class="container">
+
+      <!-- صفحه قفل ادمین -->
+      <div id="lockScreen" class="lock-screen glass">
+        <h2>🔐 پنل مدیریت</h2>
+        <p>برای ورود رمز عبور ادمین را وارد کنید</p>
+        <div class="form-group">
+          <input type="password" id="adminPassword" placeholder="رمز عبور ادمین" style="text-align:center;">
+        </div>
+        <button class="btn primary full" id="adminLoginBtn">ورود به پنل</button>
+      </div>
+
+      <!-- پنل اصلی (مخفی تا وقتی لاگین نشه) -->
+      <div id="adminPanel" class="hidden">
+        <div class="section-header">
+          <h2 class="section-title">پنل مدیریت محصولات</h2>
+          <p class="section-subtitle">محصول جدید اضافه کنید یا محصولات موجود را مدیریت کنید</p>
+        </div>
+
+        <div class="admin-grid">
+          <!-- فرم افزودن -->
+          <div class="admin-card glass">
+            <h3>➕ افزودن محصول جدید</h3>
+            <form id="addProductForm">
+              <div class="form-group">
+                <label>نام محصول</label>
+                <input type="text" id="pName" required placeholder="مثال: برنج هاشمی">
+              </div>
+              <div class="form-group">
+                <label>توضیح کوتاه</label>
+                <input type="text" id="pShort" required placeholder="یک جمله کوتاه">
+              </div>
+              <div class="form-group">
+                <label>توضیح کامل</label>
+                <input type="text" id="pFull" placeholder="توضیحات بیشتر (اختیاری)">
+              </div>
+             <div class="form-group">
+              <label>قیمت اصلی (تومان)</label>
+              <input type="number" id="pOriginalPrice" min="1000" placeholder="مثلاً 185000">
+            </div>
+            <div class="form-group">
+              <label>قیمت نهایی / با تخفیف (تومان)</label>
+              <input type="number" id="pPrice" required min="1000" placeholder="مثلاً 160000">
+            </div>
+              <div class="form-group">
+                <label>دسته‌بندی</label>
+                <select id="pCategory" required style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);color:var(--text-primary);font-family:inherit;font-size:1rem;">
+                  <option value="">انتخاب کنید</option>
+                  <option value="غلات">غلات</option>
+                  <option value="روغن‌ها">روغن‌ها</option>
+                  <option value="شیرینی‌جات">شیرینی‌جات</option>
+                  <option value="نوشیدنی‌ها">نوشیدنی‌ها</option>
+                  <option value="ادویه‌جات">ادویه‌جات</option>
+                  <option value="لبنیات">لبنیات</option>
+                  <option value="سایر">سایر</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>عکس محصول (حداکثر ۲۵۰KB بعد از فشرده‌سازی)</label>
+                <input type="file" id="pImageFile" accept="image/*">
+                <div id="imagePreview" style="margin-top:12px;display:none;">
+                  <img id="previewImg" style="max-width:160px;max-height:160px;border-radius:12px;object-fit:cover;">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>موجودی (تعداد)</label>
+                <input type="number" id="pStock" required min="0" value="10" placeholder="مثلاً 50">
+              </div>
+              <button type="submit" class="btn primary full">افزودن محصول</button>
+            </form>
+          </div>
+
+          <!-- لیست محصولات -->
+          <div class="admin-card glass">
+  <h3>📦 محصولات موجود</h3>
+  <div class="form-group" style="margin-bottom:16px;">
+    <input type="text" id="adminSearch" placeholder="جستجو با نام محصول..." autocomplete="off">
+  </div>
+  <div class="admin-products-list" id="adminProductsList">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer glass">
+    <div class="container">
+      <p>© ۱۴۰۵ FreshMart — پنل مدیریت</p>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- مودال ویرایش محصول -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal glass" style="max-width: 480px;">
+    <button class="modal-close" data-close="editModal">×</button>
+    <h2>✏️ ویرایش محصول</h2>
+    <form id="editProductForm">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>نام محصول</label>
+        <input type="text" id="editName" required>
+      </div>
+      <div class="form-group">
+        <label>توضیح کوتاه</label>
+        <input type="text" id="editShort" required>
+      </div>
+      <div class="form-group">
+        <label>توضیح کامل</label>
+        <input type="text" id="editFull">
+      </div>
+      <div class="form-group">
+      <label>قیمت اصلی (تومان)</label>
+      <input type="number" id="editOriginalPrice" min="1000" placeholder="خالی = بدون تخفیف">
+    </div>
+    <div class="form-group">
+      <label>قیمت نهایی / با تخفیف (تومان)</label>
+      <input type="number" id="editPrice" required min="1000">
+    </div>
+      <div class="form-group">
+        <label>دسته‌بندی</label>
+        <select id="editCategory" required style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);color:var(--text-primary);font-family:inherit;font-size:1rem;">
+          <option value="غلات">غلات</option>
+          <option value="روغن‌ها">روغن‌ها</option>
+          <option value="شیرینی‌جات">شیرینی‌جات</option>
+          <option value="نوشیدنی‌ها">نوشیدنی‌ها</option>
+          <option value="ادویه‌جات">ادویه‌جات</option>
+          <option value="لبنیات">لبنیات</option>
+          <option value="سایر">سایر</option>
+        </select>
+      </div>
+      <div class="form-group">
+      <label>عکس جدید (اختیاری - اگر انتخاب نکنی عکس قبلی می‌مونه)</label>
+      <input type="file" id="editImageFile" accept="image/*">
+      <div id="editImagePreview" style="margin-top:12px;">
+        <img id="editPreviewImg" style="max-width:120px;max-height:120px;border-radius:10px;object-fit:cover;display:none;">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>موجودی (تعداد)</label>
+      <input type="number" id="editStock" required min="0">
+    </div>
+      <button type="submit" class="btn primary full">ذخیره تغییرات</button>
+    </form>
+  </div>
+</div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    const ADMIN_PASS = 'admin123'; // می‌تونی عوضش کنی
+   let allAdminProducts = [];
+
+async function loadAdminProducts() {
+  const list = document.getElementById('adminProductsList');
+  list.innerHTML = '<p style="color:var(--text-secondary);text-align:center;">در حال بارگذاری...</p>';
+
+  try {
+    const res = await fetch('/api/products');
+    if (!res.ok) throw new Error('خطا در دریافت');
+    allAdminProducts = await res.json();
+
+    console.log('تعداد محصولات ادمین:', allAdminProducts.length); // برای تست
+
+    applyAdminSearch();
+  } catch (e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);text-align:center;">خطا در بارگذاری محصولات</p>';
+    showToast('خطا در بارگذاری محصولات', 'error');
+  }
+}
+
+function applyAdminSearch() {
+  const input = document.getElementById('adminSearch');
+  const q = (input?.value || '').trim().toLowerCase();
+  const list = document.getElementById('adminProductsList');
+
+  // اگر هنوز لود نشده
+  if (!allAdminProducts || allAdminProducts.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-secondary);text-align:center;">محصولی برای نمایش نیست</p>';
+    return;
+  }
+
+  let filtered = allAdminProducts;
+
+  if (q) {
+    filtered = allAdminProducts.filter(p => {
+      const name = (p.name || '').toLowerCase();
+      const cat = (p.category || '').toLowerCase();
+      return name.includes(q) || cat.includes(q);
+    });
+  }
+
+  if (!filtered.length) {
+    list.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">محصولی یافت نشد</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => {
+    // برای onclick امن‌تر (بدون مشکل کوتیشن)
+    const safe = encodeURIComponent(JSON.stringify(p));
+    return `
+      <div class="admin-product-item">
+        <div class="info">
+          <div class="name">${p.name}</div>
+          <div class="meta">${p.category} — ${Number(p.price).toLocaleString('fa-IR')} تومان — موجودی: ${p.stock ?? 0}</div>
+        </div>
+        <div class="actions">
+          <button class="edit-btn" data-product="${safe}">ویرایش</button>
+          <button class="delete-btn" onclick="deleteProduct(${p.id})">حذف</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // وصل کردن دکمه ویرایش
+  list.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const product = JSON.parse(decodeURIComponent(btn.dataset.product));
+      openEditModal(product);
+    });
+  });
+}
+
+// رویداد سرچ
+document.getElementById('adminSearch')?.addEventListener('input', applyAdminSearch);
+    // چک کردن لاگین ادمین
+    if (sessionStorage.getItem('isAdmin') === 'true') {
+      showAdminPanel();
+    }
+
+    document.getElementById('adminLoginBtn').addEventListener('click', () => {
+      const pass = document.getElementById('adminPassword').value;
+      if (pass === ADMIN_PASS) {
+        sessionStorage.setItem('isAdmin', 'true');
+        showAdminPanel();
+        showToast('وارد پنل ادمین شدید', 'success');
+      } else {
+        showToast('رمز عبور اشتباه است', 'error');
+      }
+    });
+
+    document.getElementById('adminPassword').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+    });
+
+    function showAdminPanel() {
+      document.getElementById('lockScreen').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+      loadAdminProducts();
+    }
+
+    // بارگذاری لیست محصولات
+    
+    // افزودن محصول
+    document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const body = {
+    name: document.getElementById('pName').value.trim(),
+    shortDesc: document.getElementById('pShort').value.trim(),
+    fullDesc: document.getElementById('pFull').value.trim(),
+    price: document.getElementById('pPrice').value,
+    category: document.getElementById('pCategory').value,
+    image: window._pendingImage || ''   ,
+    stock: document.getElementById('pStock').value ,
+    price: document.getElementById('pPrice').value,
+    originalPrice: document.getElementById('pOriginalPrice').value || null,
+  };
+
+  const name = document.getElementById('pName').value.trim();
+const shortDesc = document.getElementById('pShort').value.trim();
+const price = document.getElementById('pPrice').value;
+const category = document.getElementById('pCategory').value;
+const stock = document.getElementById('pStock').value;
+
+if (name.length < 2) {
+  showToast('نام محصول خیلی کوتاه است', 'error');
+  return;
+}
+if (shortDesc.length < 5) {
+  showToast('توضیح کوتاه حداقل ۵ کاراکتر باشد', 'error');
+  return;
+}
+if (!price || Number(price) < 1000) {
+  showToast('قیمت باید حداقل ۱۰۰۰ تومان باشد', 'error');
+  return;
+}
+if (!category) {
+  showToast('دسته‌بندی را انتخاب کنید', 'error');
+  return;
+}
+if (stock === '' || Number(stock) < 0 || !Number.isInteger(Number(stock))) {
+  showToast('موجودی باید عدد صحیح و صفر یا بیشتر باشد', 'error');
+  return;
+}
+
+if (!price || Number(price) < 1000) {
+  showToast('قیمت نهایی باید حداقل ۱۰۰۰ تومان باشد', 'error');
+  return;
+}
+const origAdd = document.getElementById('pOriginalPrice').value;
+if (origAdd && Number(origAdd) < Number(price)) {
+  showToast('قیمت اصلی نباید از قیمت نهایی کمتر باشد', 'error');
+  return;
+}
+
+  try {
+    const res = await fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json',
+        'x-admin-key': 'Admin123'
+       },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || 'خطا', 'error');
+      return;
+    }
+
+    showToast('محصول با موفقیت اضافه شد ✅', 'success');
+    document.getElementById('addProductForm').reset();
+    document.getElementById('imagePreview').style.display = 'none';
+    window._pendingImage = null;
+    loadAdminProducts();
+  } catch (err) {
+    showToast('خطا در ارتباط با سرور', 'error');
+  }
+});
+
+    // حذف محصول
+    async function deleteProduct(id) {
+      if (!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
+
+      try {
+        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' , headers: { 'Content-Type': 'application/json' ,
+        'x-admin-key': 'Admin123'
+      }} );
+        const data = await res.json();
+
+        if (!res.ok) {
+          showToast(data.error || 'خطا', 'error');
+          return;
+        }
+
+        showToast('محصول حذف شد', 'success');
+        loadAdminProducts();
+      } catch (err) {
+        showToast('خطا در حذف', 'error');
+      }
+    }
+ 
+function openEditModal(product) {
+  document.getElementById('editId').value = product.id;
+  document.getElementById('editName').value = product.name;
+  document.getElementById('editShort').value = product.shortDesc;
+  document.getElementById('editFull').value = product.fullDesc || '';
+  document.getElementById('editPrice').value = product.price;
+  document.getElementById('editCategory').value = product.category;
+  document.getElementById('editStock').value = product.stock ?? 0;
+  document.getElementById('editPrice').value = product.price;
+document.getElementById('editOriginalPrice').value = product.originalPrice || '';
+
+  const preview = document.getElementById('editPreviewImg');
+  if (product.image && product.image.startsWith('data:')) {
+    preview.src = product.image;
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
+
+  window._pendingEditImage = null;
+  openModal('editModal');
+}
+document.getElementById('editProductForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const id = document.getElementById('editId').value;
+  const name = document.getElementById('editName').value.trim();
+  const shortDesc = document.getElementById('editShort').value.trim();
+  const fullDesc = document.getElementById('editFull').value.trim();
+  const price = document.getElementById('editPrice').value;
+  const category = document.getElementById('editCategory').value;
+  const stock = document.getElementById('editStock').value;
+
+  // اعتبارسنجی
+  if (name.length < 2) {
+    showToast('نام محصول خیلی کوتاه است', 'error');
+    return;
+  }
+  if (shortDesc.length < 5) {
+    showToast('توضیح کوتاه حداقل ۵ کاراکتر باشد', 'error');
+    return;
+  }
+  if (!price || Number(price) < 1000) {
+    showToast('قیمت باید حداقل ۱۰۰۰ تومان باشد', 'error');
+    return;
+  }
+  if (!category) {
+    showToast('دسته‌بندی را انتخاب کنید', 'error');
+    return;
+  }
+  if (stock === '' || Number(stock) < 0 || !Number.isInteger(Number(stock))) {
+    showToast('موجودی باید عدد صحیح و صفر یا بیشتر باشد', 'error');
+    return;
+  }
+
+  const body = {
+    name,
+    shortDesc,
+    fullDesc,
+    price,
+    category,
+    image: window._pendingEditImage || '',
+    stock,
+    price: document.getElementById('editPrice').value,
+originalPrice: document.getElementById('editOriginalPrice').value || null,
+  };
+
+  if (!price || Number(price) < 1000) {
+  showToast('قیمت نهایی باید حداقل ۱۰۰۰ تومان باشد', 'error');
+  return;
+}
+const origEdit = document.getElementById('editOriginalPrice').value;
+if (origEdit && Number(origEdit) < Number(price)) {
+  showToast('قیمت اصلی نباید از قیمت نهایی کمتر باشد', 'error');
+  return;
+}
+
+  try {
+    const res = await fetch(`/api/products/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' ,
+        'x-admin-key': 'Admin123'
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || 'خطا در ویرایش', 'error');
+      return;
+    }
+
+    showToast('محصول با موفقیت ویرایش شد ✅', 'success');
+    closeModal('editModal');
+    window._pendingEditImage = null;
+    loadAdminProducts();
+  } catch (err) {
+    showToast('خطا در ارتباط با سرور', 'error');
+  }
+});
+// فشرده‌سازی تصویر و تبدیل به Base64 (زیر 250KB)
+function compressImage(file, maxSizeKB = 250, maxWidth = 800) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type.startsWith('image/')) {
+      return reject(new Error('فایل تصویر معتبر نیست'));
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        // کوچک کردن ابعاد اگر خیلی بزرگ باشه
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // کیفیت رو کم کم پایین میاریم تا حجم زیر 250KB بشه
+        let quality = 0.85;
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+        while (dataUrl.length > maxSizeKB * 1024 * 1.37 && quality > 0.3) {
+          // 1.37 تقریباً ضریب base64 هست
+          quality -= 0.07;
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('خطا در بارگذاری تصویر'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('خطا در خواندن فایل'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// پیش‌نمایش عکس افزودن
+document.getElementById('pImageFile')?.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const dataUrl = await compressImage(file);
+    document.getElementById('previewImg').src = dataUrl;
+    document.getElementById('imagePreview').style.display = 'block';
+    // موقتاً ذخیره می‌کنیم
+    window._pendingImage = dataUrl;
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+});
+
+// پیش‌نمایش عکس ویرایش
+document.getElementById('editImageFile')?.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const dataUrl = await compressImage(file);
+    const img = document.getElementById('editPreviewImg');
+    img.src = dataUrl;
+    img.style.display = 'block';
+    window._pendingEditImage = dataUrl;
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+});
+  </script>
+</body>
+</html>
